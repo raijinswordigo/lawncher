@@ -1,43 +1,4 @@
-yo @QᴜᴀɴᴛᴜᴍCʀᴇᴇᴘᴇʀ 
 
-Add a sidebar for "Mods" that opens the current window
-
-and then "Settings" there (that opens empty activity or sm)
-
-and uh "Files" view and build FileManager.java for managing lawncher's extfiles /android/data and internal files. go. 
-
-and also a Logcat sidebar option and thing IF possible since I use this in C:
-#ifndef LAWNCHER_LOG_H
-#define LAWNCHER_LOG_H
-#include <android/log.h>
-#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,   LOG_TAG, __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,    LOG_TAG, __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN,    LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,   LOG_TAG, __VA_ARGS__)
-#define LOGF(...) __android_log_print(ANDROID_LOG_FATAL,   LOG_TAG, __VA_ARGS__)
-#endif //LAWNCHER_LOG_H
-
-
-Basically get the file manager and stuff done that's the most important and sidebar drawer
-package net.kiwi.lawncher;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-
-Launcher.java
-24 KB
-package net.kiwi.lawncher;
-
-import android.content.Context;
-import android.net.Uri;
-
-import java.io.BufferedInputStream;
-
-ModManager.java
-10 KB
 # Raijin's Lawncher
 ### The world's first dedicated Swordigo launcher for Android
 
