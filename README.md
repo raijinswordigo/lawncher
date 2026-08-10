@@ -1,5 +1,5 @@
 
-# Raijin's Lawncher
+# KIWI Lawncher - Bleeding-edge sinops experiment branch!
 ### The world's first dedicated Swordigo launcher for Android
 
 Raijin's Launcher is a modular, mod-friendly launcher built specifically around the Swordigo modding ecosystem.
