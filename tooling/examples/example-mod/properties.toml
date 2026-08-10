@@ -1,0 +1,6 @@
+[mod]
+id="com.example.examplemod"
+name="Example Mod"
+version="1.0.0"
+author="You"
+description="Minimal mod scaffold — drop assets under assets/ (game asset paths), native libs under lib/<abi>/."

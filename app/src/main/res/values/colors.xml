@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lawncher_bg">#FF0A0E1A</color>
+    <color name="lawncher_surface">#FF121829</color>
+    <color name="lawncher_accent">#FF5B8CFF</color>
+    <color name="lawncher_accent_variant">#FF9C6CFF</color>
+    <color name="lawncher_accent2">#FF22D3EE</color>
+    <color name="lawncher_accent2_variant">#FF6366F1</color>
+    <color name="lawncher_text">#FFE9EDF9</color>
+    <color name="lawncher_ink">#FF0A0E1A</color>
+</resources>

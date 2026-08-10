@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        Raijin's Lawncher theme. The launcher draws its entire UI in code
+        (net.kiwi.lawncher.ui.*), so this theme only needs to be a dark
+        framework-material theme — no appcompat/material dependencies.
+    -->
+    <style name="Theme.Lawncher" parent="android:Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">@color/lawncher_accent</item>
+        <item name="android:colorPrimaryDark">@color/lawncher_bg</item>
+        <item name="android:colorAccent">@color/lawncher_accent2</item>
+        <item name="android:statusBarColor">@color/lawncher_bg</item>
+        <item name="android:navigationBarColor">@color/lawncher_bg</item>
+        <item name="android:windowBackground">@color/lawncher_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
