@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Kiwi Bird Body and Beak -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M 68,52 C 65,40 55,34 44,38 C 33,42 28,54 32,64 C 36,74 48,78 58,74 C 63,72 66,66 68,60 C 72,62 84,68 90,68 C 92,68 90,65 85,62 C 80,59 73,56 68,52 Z M 58,46 A 2,2 0 1 1 58,50 A 2,2 0 1 1 58,46 Z" />
+
+    <!-- Kiwi Bird Legs -->
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M 44,72 L 44,82 L 40,82 M 44,82 L 48,82 M 52,74 L 52,82 L 48,82 M 52,82 L 56,82" />
+
+</vector>

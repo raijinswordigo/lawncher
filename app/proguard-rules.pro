@@ -1,0 +1,2 @@
+-keep class com.touchfoo.swordigo.** { *; }
+-keep class net.kiwi.lawncher.** { *; }
