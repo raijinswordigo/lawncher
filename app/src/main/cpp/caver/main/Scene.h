@@ -71,5 +71,6 @@ typedef struct Scene {
 	char _pad10[archSplit(0x24, 0x28)];
 } Scene;
 
+Scene *get_scene();
 
 #endif //LAWNCHER_SCENE_H

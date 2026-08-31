@@ -1,0 +1,4 @@
+#ifndef LAWNCHER_LNI_H
+#define LAWNCHER_LNI_H
+
+#endif //LAWNCHER_LNI_H

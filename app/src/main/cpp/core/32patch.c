@@ -1,6 +1,10 @@
+#include <pthread.h>
 #include "hook.h"
 #include "log.h"
 #include "lua.h"
+#include "main/GameController.h"
+#include "map.h"
+#include <stdbool.h>
 
 #define LOG_TAG "ProgramPatch"
 
@@ -52,15 +56,35 @@ HOOK_SYMBOL(
 
 /* TODO: Rename file to lua_patches */
 
-/*
-HOOK_SYMBOL(
-	ProgramState_Update,
-	"_ZN5Caver12ProgramState6UpdateEf",
-	void, (void *ps, float dt)
-	) {
-	lua_State *L = *$(lua_State*, ps, 0x0, 0x0);
-	// Completely replace the logic so we don't have to call orig_.
-} */
+static Map *g_ps_map = NULL;
+static pthread_mutex_t g_ps_lock = PTHREAD_MUTEX_INITIALIZER;
+
+void ps_setTimeScaleEnabled(void *ps, bool enabled) {
+	if (!ps) return;
+	pthread_mutex_lock(&g_ps_lock);
+	if (!g_ps_map) {
+		g_ps_map = Map_Create(1);
+	}
+	Map_Set(g_ps_map, ps, (void *)(uintptr_t)enabled);
+	pthread_mutex_unlock(&g_ps_lock);
+}
+
+bool ps_isTimeScaleEnabled(void *ps) {
+	if (!ps) return false;
+	pthread_mutex_lock(&g_ps_lock);
+	void *val = Map_Get(g_ps_map, ps);
+	pthread_mutex_unlock(&g_ps_lock);
+	return (bool)(uintptr_t)val;
+}
+
+void ps_remove(void *ps) {
+	if (!ps) return;
+	pthread_mutex_lock(&g_ps_lock);
+	if (g_ps_map) {
+		Map_Remove(g_ps_map, ps);
+	}
+	pthread_mutex_unlock(&g_ps_lock);
+}
 
 HOOK_SYMBOL(
 	ProgramState_Update,
@@ -71,6 +95,8 @@ HOOK_SYMBOL(
 		LOGE("ProgramState is NULL?");
 		return;
 	}
+
+	if (/* ps_isTimeScaleEnabled(ps) */true) dt /= gsc_getSpeed();
 
 	lua_State *L = *$(lua_State *, ps, 0x0, 0x0);
 
@@ -94,4 +120,13 @@ HOOK_SYMBOL(
 			LOGE("%p encountered error: %s", ps, lua_tostring(L, -1));
 		}
 	}
+}
+
+HOOK_SYMBOL(
+	ProgramState_DTor,
+	"_ZN5Caver12ProgramStateD1Ev",
+	void, (void *ps)
+	) {
+	ps_remove(ps);
+	orig_ProgramState_DTor(ps);
 }

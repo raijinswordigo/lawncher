@@ -3,7 +3,6 @@
 #include "../libs/Gloss.h"
 #include <dlfcn.h>
 #include <stdint.h>
-// from LGL Mod Menu thing but it doesnt matter
 #ifndef HOOK_LIB_NAME
 #define HOOK_LIB_NAME "libswordigo.so"
 #endif

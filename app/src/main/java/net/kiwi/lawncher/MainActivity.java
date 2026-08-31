@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
@@ -192,7 +194,7 @@ public class MainActivity extends Activity {
             swordigoReady = false;
             targetApkPath = null;
             // Don't finish() — keep the launcher UI alive and show a clear dialog.
-            runOnUiThread(this::showSwordigoMissingDialog);
+            runOnUiThread(() -> showErrorDialog(e));
         }
 
         if (swordigoReady) {
@@ -221,13 +223,28 @@ public class MainActivity extends Activity {
         .show();
     }
 
-    private void showSwordigoMissingDialog() {
+    private void showErrorDialog(Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String stackTrace = sw.toString();
+
+        String message;
+        if (e instanceof android.content.pm.PackageManager.NameNotFoundException) {
+            message = "Vanilla Swordigo (com.touchfoo.swordigo) is not installed.\n\n"
+            + "Lawncher needs the official APK to extract libraries and assets. "
+            + "Install Swordigo from the Play Store, then reopen Lawncher.\n\n"
+            + "Error: Package not found.";
+        } else {
+            message = "Failed to extract/load Swordigo resources.\n\n"
+            + "Exception: " + e.getClass().getSimpleName() + "\n"
+            + "Message: " + e.getMessage() + "\n\n"
+            + "Trace:\n" + (stackTrace.length() > 300 ? stackTrace.substring(0, 300) + "..." : stackTrace);
+        }
+
         new AlertDialog.Builder(this)
-        .setTitle("Swordigo required")
-        .setMessage("Vanilla Swordigo (com.touchfoo.swordigo) is not installed.\n\n"
-        + "Lawncher needs the official APK to extract libraries and assets. "
-        + "Install Swordigo from the Play Store, then reopen Lawncher.\n\n"
-        + "You can still browse mods, the store, files and settings.")
+        .setTitle("Swordigo Initialization Failed")
+        .setMessage(message)
         .setPositiveButton("Got it", null)
         .setCancelable(true)
         .show();
@@ -290,7 +307,6 @@ public class MainActivity extends Activity {
         if (!instance.swordigoReady || instance.targetApkPath == null) {
             instance.runOnUiThread(() -> {
                 Toast.makeText(instance, "Swordigo is not installed — can't launch.", Toast.LENGTH_LONG).show();
-                instance.showSwordigoMissingDialog();
             });
             return;
         }

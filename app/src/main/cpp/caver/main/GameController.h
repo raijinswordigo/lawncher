@@ -98,5 +98,10 @@ typedef struct GameSceneController {
 GameViewController *get_gvc(void);
 GameSceneController *get_gsc(void);
 GameViewController *get_gov(void);
+// pls speed i need this
+void gsc_setSpeed(float speed);
+float gsc_getSpeed();
+float gsc_getDt();
+
 
 #endif //LAWNCHER_GAMECONTROLLER_H

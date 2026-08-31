@@ -16,6 +16,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         core/hook.c
         core/java.c
         core/32patch.c
+        core/physicspatch.c
         core/stdstring.c
         core/assets.c
         core/core_ffi.c
@@ -57,6 +58,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         api/jstuff/seekbar.c
         api/jstuff/textinput.c
         api/jstuff/legacy_bc.c
+        api/jstuff/lni.c
         api/exclusives/memory.c
         api/lua_libs/lua_libs.c
         ${KIWI_SOURCES}
