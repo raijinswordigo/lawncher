@@ -7,6 +7,9 @@
 
 static float g_dt = 1.0f / 60.0f;
 
+// useless ass patch
+// TODO: fix this patch doing NOTHING
+
 DL_SYMBOL(
 	SceneObject_RegisterForWorldBoundsUpdate,
 	"_ZN5Caver11SceneObject28RegisterForWorldBoundsUpdateEv",
@@ -45,7 +48,7 @@ HOOK_SYMBOL(
 	float rvy = *$(float, msg, 0x14, 0x1c);
 
 	// nah... IDK
-	if (rvx * (1.f / 60.f) * nx + rvy * (1.f / 60.f) * ny > depth + 0.01f) return;
+	if (rvx * (g_dt) * nx + rvy * (g_dt) * ny > depth + 0.01f) return;
 
 	float n[2] = { nx, ny };
 	float d = depth;
@@ -147,7 +150,7 @@ HOOK_SYMBOL(
 	float depth = *$(float, msg, 0x28, 0x30);
 
 	// im out 1.3s
-	if (rvx * -(1.f / 60.f) * nx + rvy * -(1.f / 60.f) * ny > depth + 0.01f) return;
+	if (rvx * -(g_dt) * nx + rvy * -(g_dt) * ny > depth + 0.01f) return;
 
 	float *t = $(float, this, 0x48, 0x7c);
 	float *ax = $(float, this, 0x40, 0x74);

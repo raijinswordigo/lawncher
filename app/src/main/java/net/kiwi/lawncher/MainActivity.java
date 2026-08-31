@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
     private boolean hooksLoaded = false;
     private boolean swordigoReady = false;
 
-    private static final int Version = 71;
+    private static final int Version = 72;
 
     public static int getVersion() { return Version; }
 

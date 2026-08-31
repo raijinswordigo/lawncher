@@ -1,6 +1,8 @@
 package com.L.SwordigoRuntime;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -24,7 +26,7 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         try {
-            requestHighestRefreshRate();
+            requestRefreshRate();
 
             if (!applicationSetup) {
                 Native.setupNativeInterface();
@@ -57,13 +59,28 @@ public class GameRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         try {
+            Activity activity = (Activity) Native.mainActivity;
+            int targetFps = activity != null ? activity.getSharedPreferences("lawncher_prefs", Context.MODE_PRIVATE).getInt("target_fps", 60) : 60;
+            double targetFrameTime = 1.0 / targetFps;
+
             double now = System.nanoTime() / 1_000_000_000.0;
+            if (prevTime != 0) {
+                double elapsed = now - prevTime;
+                if (elapsed < targetFrameTime) {
+                    long sleepMs = (long) ((targetFrameTime - elapsed) * 1000.0);
+                    if (sleepMs > 0) {
+                        Thread.sleep(sleepMs);
+                        now = System.nanoTime() / 1_000_000_000.0;
+                    }
+                }
+            }
+
             float dt;
             if (prevTime == 0) {
-                dt = 1f / 120f;          // safe first-frame step
+                dt = 1f / targetFps;
             } else {
                 dt = (float) (now - prevTime);
-                if (dt > 0.0667f) {      // clamp huge hitches
+                if (dt > 0.0667f) {
                     dt = 0.0667f;
                 }
             }
@@ -75,83 +92,45 @@ public class GameRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    /**
-     * Safely requests the highest refresh rate that has the SAME resolution
-     * as the currently active mode.  This avoids the black-screen problem
-     * that occurs when a high-Hz mode has a different width/height.
-     */
-    private void requestHighestRefreshRate() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            Log.i(TAG, "Refresh-rate request skipped (API < 23)");
-            return;
-        }
+    private void requestRefreshRate() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
 
         Activity activity = (Activity) Native.mainActivity;
-        if (activity == null) {
-            Log.w(TAG, "mainActivity is null – cannot request refresh rate");
-            return;
-        }
+        if (activity == null || activity.getWindow() == null) return;
 
-        Window window = activity.getWindow();
-        if (window == null) {
-            Log.w(TAG, "Window is null – cannot request refresh rate");
-            return;
-        }
+        int targetFps = activity.getSharedPreferences("lawncher_prefs", Context.MODE_PRIVATE).getInt("target_fps", 60);
 
         try {
+            Window window = activity.getWindow();
             Display display = window.getWindowManager().getDefaultDisplay();
-            Display.Mode currentMode = display.getMode();          // API 23+
+            Display.Mode currentMode = display.getMode();
             Display.Mode[] modes = display.getSupportedModes();
 
-            if (modes == null || modes.length == 0) {
-                Log.w(TAG, "No supported modes");
-                return;
-            }
+            if (modes == null || modes.length == 0) return;
 
             int curWidth  = currentMode.getPhysicalWidth();
             int curHeight = currentMode.getPhysicalHeight();
-            float curRate = currentMode.getRefreshRate();
 
-            Log.i(TAG, String.format(
-            "Current mode: %dx%d @ %.1f Hz (modeId=%d)",
-            curWidth, curHeight, curRate, currentMode.getModeId()));
-
-            // Find the highest refresh rate that keeps the same resolution
             Display.Mode best = null;
-            float bestRate = curRate;   // never go lower
+            float minDiff = Float.MAX_VALUE;
 
-            StringBuilder sb = new StringBuilder();
             for (Display.Mode m : modes) {
-                float rate = m.getRefreshRate();
-                sb.append(String.format("%dx%d@%.1fHz ",
-                m.getPhysicalWidth(), m.getPhysicalHeight(), rate));
-
-                // MUST match resolution, otherwise the surface breaks
-                if (m.getPhysicalWidth()  == curWidth &&
-                m.getPhysicalHeight() == curHeight &&
-                rate > bestRate) {
-                    best = m;
-                    bestRate = rate;
+                if (m.getPhysicalWidth() == curWidth && m.getPhysicalHeight() == curHeight) {
+                    float diff = Math.abs(m.getRefreshRate() - targetFps);
+                    if (diff < minDiff) {
+                        best = m;
+                        minDiff = diff;
+                    }
                 }
             }
-            Log.i(TAG, "All supported modes: " + sb.toString().trim());
 
-            if (best == null) {
-                Log.i(TAG, "Already at the highest rate for this resolution (" + curRate + " Hz)");
-                return;
+            if (best != null) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.preferredDisplayModeId = best.getModeId();
+                window.setAttributes(params);
             }
-
-            WindowManager.LayoutParams params = window.getAttributes();
-            int oldId = params.preferredDisplayModeId;
-            params.preferredDisplayModeId = best.getModeId();
-            window.setAttributes(params);
-
-            Log.i(TAG, String.format(
-            "Switched to %.1f Hz (modeId=%d, previous preferredModeId=%d)",
-            bestRate, best.getModeId(), oldId));
-
         } catch (Throwable t) {
-            Log.e(TAG, "Failed to request higher refresh rate bruh staying at current rate", t);
+            Log.e(TAG, "Failed to request refresh rate", t);
         }
     }
 
