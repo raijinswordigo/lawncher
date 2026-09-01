@@ -16,11 +16,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         core/hook.c
         core/java.c
         core/32patch.c
-        core/physicspatch.c
-        core/stdstring.c
         core/assets.c
-        core/core_ffi.c
-        core/components.c
+        core/saves.c
+        core/stdstring.c
         core/jpatch.c
         core/map.c
         core/toml.c
@@ -35,36 +33,12 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         lawncher/tools/pod_loader.cpp
         lawncher/tools/scene_schemas.cpp
 
-        # Caver
-        caver/caver.c
-        caver/main/Scene.c
-        caver/main/GameController.c
-        caver/main/SceneObject.c
-
         # Lua
         lua/lua.c
         lua/lauxlib.c
 
-        # Lua APIs
-        api/apis.c
-        api/fs.c
-        api/console.c
-        api/cstrings.c
-        api/jstuff/main.c
-        api/jstuff/button.c
-        api/jstuff/drawer.c
-        api/jstuff/hooks.c
-        api/jstuff/overlay.c
-        api/jstuff/seekbar.c
-        api/jstuff/textinput.c
-        api/jstuff/legacy_bc.c
-        api/jstuff/lni.c
-        api/exclusives/memory.c
-        api/lua_libs/lua_libs.c
-        ${KIWI_SOURCES}
-
-        # Events
-        events/scene.c
+        # API
+        api/main.c
 
         # Entrypoint
         main.c

@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private static MainActivity instance;
     private GameView glSurfaceView;
     private String targetApkPath;
+    private String[] targetApkPaths;
     private boolean hooksLoaded = false;
     private boolean swordigoReady = false;
 
@@ -125,7 +126,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        // Prevent IME from resizing the whole activity (ugly gap under search bars).
         getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         instance = this;
@@ -181,10 +181,11 @@ public class MainActivity extends Activity {
         try {
             ApplicationInfo info = getPackageManager().getApplicationInfo(targetPackage, 0);
             targetApkPath = info.sourceDir;
+            targetApkPaths = collectApkPaths(info);
 
-            extractLibFromZip(targetApkPath, "lib/" + abiFolder + "/libopenal-soft.so", openAlFile);
-            extractLibFromZip(targetApkPath, "lib/" + abiFolder + "/libswordigo.so", swordigoFile);
-            extractMusicFiles(targetApkPath);
+            extractLibFromZip(targetApkPaths, "lib/" + abiFolder + "/libopenal-soft.so", openAlFile);
+            extractLibFromZip(targetApkPaths, "lib/" + abiFolder + "/libswordigo.so", swordigoFile);
+            extractMusicFiles(targetApkPaths);
 
             System.load(openAlFile.getAbsolutePath());
             System.load(swordigoFile.getAbsolutePath());
@@ -205,6 +206,17 @@ public class MainActivity extends Activity {
 
     /** Native: tell the crash catcher where to write last_crash.log */
     public static native void setCrashLogPath(String path);
+
+    /** base.apk + installed split apks — 1.4.13 moved libs/assets into splits. */
+    private static String[] collectApkPaths(ApplicationInfo info) {
+        if (info.splitSourceDirs == null || info.splitSourceDirs.length == 0)
+            return new String[]{info.sourceDir};
+
+        String[] paths = new String[info.splitSourceDirs.length + 1];
+        paths[0] = info.sourceDir;
+        System.arraycopy(info.splitSourceDirs, 0, paths, 1, info.splitSourceDirs.length);
+        return paths;
+    }
 
     private void checkPreviousCrash() {
         if (!SettingsScreen.pref(this, SettingsScreen.KEY_CRASH_DIALOGS, true)) return;
@@ -250,7 +262,7 @@ public class MainActivity extends Activity {
         .show();
     }
 
-    private void extractMusicFiles(String apkPath) {
+    private void extractMusicFiles(String[] apkPaths) {
         File extDir = getExternalFilesDir(null);
         if (extDir == null) return;
 
@@ -261,44 +273,47 @@ public class MainActivity extends Activity {
         }
 
         String[][] musicFiles = {
-        {"res/7c.mp3", "1_boss23"},
-        {"res/s7.mp3", "1_dung73"},
-        {"res/jy.mp3", "1_hero2"},
-        {"res/3H.mp3", "1_plainstest2"},
-        {"res/Fc.mp3", "2cave2"},
-        {"res/md.mp3", "gameover"},
-        {"res/R2.mp3", "heartbeat"},
-        {"res/LM.mp3", "momentofwonder"},
-        {"res/lU.mp3", "squire_new2"}
+        {"res/raw/music_1_boss23.mp3", "1_boss23"},
+        {"res/raw/music_1_dung73.mp3", "1_dung73"},
+        {"res/raw/music_1_hero2.mp3", "1_hero2"},
+        {"res/raw/music_1_plaintest2.mp3", "1_plainstest2"},
+        {"res/raw/music_2cave2.mp3", "2cave2"},
+        {"res/raw/music_gameover.mp3", "gameover"},
+        {"res/raw/music_heartbeat.mp3", "heartbeat"},
+        {"res/raw/music_momentofwonder.mp3", "momentofwonder"},
+        {"res/raw/music_squire_new2.mp3", "squire_new2"}
         };
 
-        try (ZipFile zipFile = new ZipFile(apkPath)) {
-            for (String[] music : musicFiles) {
-                String source = music[0];
-                String name   = music[1];
-                File dest     = new File(musicDir, name);
+        for (String[] music : musicFiles) {
+            String source = music[0];
+            String name = music[1];
+            File dest = new File(musicDir, name);
 
-                // already extracted → skip
-                if (dest.exists() && dest.length() > 0) continue;
+            // already extracted → skip
+            if (dest.exists() && dest.length() > 0) continue;
 
-                ZipEntry entry = zipFile.getEntry(source);
-                if (entry == null) {
-                    Log.w(TAG, "Missing music in APK: " + source);
-                    continue;
+            boolean extracted = false;
+            for (String apkPath : apkPaths) {
+                try (ZipFile zipFile = new ZipFile(apkPath)) {
+                    ZipEntry entry = zipFile.getEntry(source);
+                    if (entry == null) continue;
+
+                    try (InputStream in = zipFile.getInputStream(entry);
+                         FileOutputStream out = new FileOutputStream(dest)) {
+                        byte[] buffer = new byte[8192];
+                        int n;
+                        while ((n = in.read(buffer)) != -1)
+                            out.write(buffer, 0, n);
+                        out.flush();
+                    }
+                    Log.d(TAG, "Extracted music: " + source + " → " + dest);
+                    extracted = true;
+                    break;
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed reading " + apkPath + " for " + source, e);
                 }
-
-                try (InputStream in = zipFile.getInputStream(entry);
-                     FileOutputStream out = new FileOutputStream(dest)) {
-                    byte[] buffer = new byte[8192];
-                    int n;
-                    while ((n = in.read(buffer)) != -1)
-                        out.write(buffer, 0, n);
-                    out.flush();
-                }
-                Log.d(TAG, "Extracted music: " + source + " → " + dest);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to extract music", e);
+            if (!extracted) Log.w(TAG, "Missing music in any split: " + source);
         }
     }
 
@@ -500,29 +515,32 @@ public class MainActivity extends Activity {
             instance = null;
     }
 
-    private void extractLibFromZip(String apkPath, String zipEntryPath, File destFile) throws IOException {
+    private void extractLibFromZip(String[] apkPaths, String zipEntryPath, File destFile) throws IOException {
         if (destFile.exists() && destFile.length() > 0) {
             destFile.setReadable(true, false);
             destFile.setExecutable(true, false);
             return;
         }
 
-        try (ZipFile zipFile = new ZipFile(apkPath)) {
-            ZipEntry entry = zipFile.getEntry(zipEntryPath);
-            if (entry == null)
-                throw new java.io.FileNotFoundException("missing " + zipEntryPath + " in " + apkPath);
+        for (String apkPath : apkPaths) {
+            try (ZipFile zipFile = new ZipFile(apkPath)) {
+                ZipEntry entry = zipFile.getEntry(zipEntryPath);
+                if (entry == null) continue;
 
-            try (InputStream in = zipFile.getInputStream(entry);
-                 FileOutputStream out = new FileOutputStream(destFile)) {
-                byte[] buf = new byte[8192];
-                int n;
-                while ((n = in.read(buf)) != -1)
-                    out.write(buf, 0, n);
-                out.flush();
+                try (InputStream in = zipFile.getInputStream(entry);
+                     FileOutputStream out = new FileOutputStream(destFile)) {
+                    byte[] buf = new byte[8192];
+                    int n;
+                    while ((n = in.read(buf)) != -1)
+                        out.write(buf, 0, n);
+                    out.flush();
+                }
+
+                destFile.setReadable(true, false);
+                destFile.setExecutable(true, false);
+                return;
             }
-
-            destFile.setReadable(true, false);
-            destFile.setExecutable(true, false);
         }
+        throw new java.io.FileNotFoundException("missing " + zipEntryPath + " in any split apk");
     }
 }

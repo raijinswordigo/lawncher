@@ -90,6 +90,15 @@ const char *java_current_mod_id(void) {
 	return g_current_mod;
 }
 
+const char *java_resource_path(const char *res) {
+	const char *id = java_current_mod_id();
+	char buf[512];
+	snprintf(buf, sizeof(buf),
+			 "%s/mods/%s/%s",
+			 g_externalfiles, id, res);
+	return buf;
+}
+
 void java_reset_mod_id(void) {
 	g_current_mod[0] = '\0';
 	g_mod_fetched = 0;

@@ -2,7 +2,6 @@
 #include "hook.h"
 #include "log.h"
 #include "lua.h"
-#include "main/GameController.h"
 #include "map.h"
 #include <stdbool.h>
 
@@ -95,8 +94,6 @@ HOOK_SYMBOL(
 		LOGE("ProgramState is NULL?");
 		return;
 	}
-
-	if (/* ps_isTimeScaleEnabled(ps) */true) dt /= gsc_getSpeed();
 
 	lua_State *L = *$(lua_State *, ps, 0x0, 0x0);
 

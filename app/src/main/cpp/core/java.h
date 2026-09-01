@@ -14,6 +14,7 @@ void java_release_env(int attached);
 const char *java_internal_files(void);
 const char *java_external_files(void);
 const char *java_current_mod_id(void);
+const char *java_resource_path(const char *res);
 
 /* call when leaving a mod session so next launch re-reads currentMod */
 void java_reset_mod_id(void);
