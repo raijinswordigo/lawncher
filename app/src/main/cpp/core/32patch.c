@@ -96,22 +96,10 @@ HOOK_SYMBOL(
 	}
 
 	lua_State *L = *$(lua_State *, ps, 0x0, 0x0);
-
-	char active = *$(char, ps, 0x2d, 0x51);
-	char forced = *$(char, ps, 0x2e, 0x52);
-	char aborted = *$(char, ps, 0x2f, 0x53);
-	int waitMode = *$(int,  ps, 0x24, 0x48);
-
-	if (active || forced) {
-		if (waitMode == 1) {
-			float remaining = *$(float, ps, 0x28, 0x4c);
-//			LOGD("ProgramState %p waiting (%.3f left)", ps, remaining);
-		}
-	}
-
+	char aborted = *$(char, ps, 0x33, 0x5b);
 	orig_ProgramState_Update(ps, dt);
 
-	aborted = *$(char, ps, 0x2f, 0x53);
+	aborted = *$(char, ps, 0x33, 0x5b);
 	if (aborted && L) {
 		if (lua_gettop(L) > 0 && lua_isstring(L, -1)) {
 			LOGE("%p encountered error: %s", ps, lua_tostring(L, -1));
