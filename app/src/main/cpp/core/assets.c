@@ -90,9 +90,11 @@ HOOK_SYMBOL(
 	return orig_NewByteBufferFromAA(file, param_2);
 }
 
+//extern void save_manager_on_mod_exit(void);
 /* called from Java when we leave a mod / return to launcher */
 void assets_on_mod_exit(void) {
 	java_reset_mod_id();
+//	save_manager_on_mod_exit();
 	LOGI("assets_on_mod_exit: state cleared");
 }
 

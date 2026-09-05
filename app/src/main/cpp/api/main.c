@@ -7,9 +7,8 @@ static int Test(lua_State *L) {
 	return 1;
 }
 
-
 static const luaL_Reg globals[] = {
-	{"Testoo", Test},
+	{"Test", Test},
 	{NULL, NULL}
 };
 
