@@ -92,10 +92,10 @@ const char *java_current_mod_id(void) {
 
 const char *java_resource_path(const char *res) {
 	const char *id = java_current_mod_id();
-	char buf[512];
+	static char buf[512];
 	snprintf(buf, sizeof(buf),
-			 "%s/mods/%s/%s",
-			 g_externalfiles, id, res);
+	         "%s/mods/%s/%s",
+	         g_externalfiles, id, res);
 	return buf;
 }
 
