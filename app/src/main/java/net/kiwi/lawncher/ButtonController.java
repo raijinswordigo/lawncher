@@ -31,7 +31,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 @SuppressWarnings("unused")
-@Keep // domt remove ts its important
+// Not necessary anymore.
 public class ButtonController {
 
     private static final String LOG_TAG = "MiniBtnController";
@@ -67,7 +67,7 @@ public class ButtonController {
         boolean showValue;
         String valueFormat = "%d";
         private final android.text.TextPaint paint =
-        new android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+                new android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG);
 
         ValueSeekBar(Context ctx) {
             super(ctx);
@@ -98,14 +98,9 @@ public class ButtonController {
                 text = String.valueOf(getProgress());
             }
 
-            android.graphics.drawable.Drawable thumb = getThumb();
-            if (thumb == null) return;
-
-            android.graphics.Rect b = thumb.getBounds();
-            float cx = b.centerX() + getPaddingLeft() - getThumbOffset();
+            float cx = getWidth() / 2f;
             float cy = getHeight() / 2f;
-
-            float size = Math.max(10f, Math.min(b.width(), b.height()) * 0.45f);
+            float size = Math.max(12f, getHeight() * 0.55f);
             paint.setTextSize(size);
 
             android.graphics.Paint.FontMetrics fm = paint.getFontMetrics();
@@ -245,6 +240,7 @@ public class ButtonController {
     private static final HashMap<String, ButtonData> buttons = new HashMap<>();
     private static final HashMap<String, OverlayData> overlays = new HashMap<>();
 
+    // _G.OverlayController
     public static void init(MainActivity act, ViewGroup view) {
         mainActivityRef = new WeakReference<>(act);
         viewRef = new WeakReference<>(view);
@@ -264,23 +260,23 @@ public class ButtonController {
 
         if (data.scaleDetector == null) {
             data.scaleDetector = new android.view.ScaleGestureDetector(ctx,
-            new android.view.ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                @Override
-                @SuppressWarnings("NullableProblems")
-                public boolean onScale(android.view.ScaleGestureDetector detector) {
-                    if (!data.pinchable) return false;
-                    data.scaleFactor = detector.getScaleFactor();
-                    data.pinching = true;
-                    return true;
-                }
+                    new android.view.ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                        @Override
+                        @SuppressWarnings("NullableProblems")
+                        public boolean onScale(android.view.ScaleGestureDetector detector) {
+                            if (!data.pinchable) return false;
+                            data.scaleFactor = detector.getScaleFactor();
+                            data.pinching = true;
+                            return true;
+                        }
 
-                @Override
-                @SuppressWarnings("NullableProblems")
-                public void onScaleEnd(android.view.ScaleGestureDetector detector) {
-                    data.pinching = false;
-                    data.scaleFactor = 1.0f;
-                }
-            }
+                        @Override
+                        @SuppressWarnings("NullableProblems")
+                        public void onScaleEnd(android.view.ScaleGestureDetector detector) {
+                            data.pinching = false;
+                            data.scaleFactor = 1.0f;
+                        }
+                    }
             );
         }
 
@@ -329,6 +325,7 @@ public class ButtonController {
         });
     }
 
+    // Overlay
     @SuppressLint("ClickableViewAccessibility")
     public static void newOverlay(String id, float nx, float ny, float nw, float nh) {
         MainActivity ctx = mainActivityRef.get();
@@ -591,6 +588,7 @@ public class ButtonController {
         return data != null && data.pinching;
     }
 
+    // Drawer
     @SuppressLint("ClickableViewAccessibility")
     public static void newDrawer(String id, float nx, float ny, float nw, float nh) {
         MainActivity ctx = mainActivityRef.get();
@@ -620,9 +618,9 @@ public class ButtonController {
             contentLayout.setPadding(dp(8), dp(8), dp(8), dp(8));
 
             scrollView.addView(contentLayout, new FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             frame.addView(scrollView, new FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(widthPx, heightPx);
             lp.leftMargin = (int) (rw * nx) - widthPx / 2;
@@ -716,7 +714,7 @@ public class ButtonController {
             });
 
             android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
             int finalSpacing = spacingDp > 0 ? spacingDp : drawer.itemSpacingDp;
             lp.setMargins(0, 0, 0, dp(finalSpacing));
@@ -786,7 +784,7 @@ public class ButtonController {
             });
 
             android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, 0, 0, dp(6));
 
             drawer.contentLayout.addView(btn, lp);
@@ -833,15 +831,9 @@ public class ButtonController {
         });
     }
 
+    // Button
     @SuppressLint("ClickableViewAccessibility")
-    public static void addButton(
-    String id,
-    String label,
-    float nx,
-    float ny,
-    float w,
-    float h
-    ) {
+    public static void addButton(String id, String label, float nx, float ny, float w, float h) {
         MainActivity ctx = mainActivityRef.get();
 
         if (ctx == null) return;
@@ -862,8 +854,8 @@ public class ButtonController {
 
             try {
                 Typeface tf = Typeface.createFromAsset(
-                ctx.getAssets(),
-                "fonts/megalopolis_extra.otf"
+                        ctx.getAssets(),
+                        "fonts/megalopolis_extra.otf"
                 );
                 btn.setTypeface(tf);
             } catch (Exception e) {
@@ -1012,10 +1004,7 @@ public class ButtonController {
         });
     }
 
-    public static void setClickable(
-    String id,
-    int clickable
-    ) {
+    public static void setClickable(String id, int clickable) {
         MainActivity ctx = mainActivityRef.get();
         ViewGroup root = viewRef.get();
 
@@ -1031,10 +1020,7 @@ public class ButtonController {
         });
     }
 
-    public static void setTextFont(
-    String id,
-    String font
-    ) {
+    public static void setTextFont(String id, String font) {
         MainActivity ctx = mainActivityRef.get();
         ViewGroup root = viewRef.get();
 
@@ -1254,19 +1240,14 @@ public class ButtonController {
     }
 
     @SuppressLint("DiscouragedApi")
-    public static int getResIdByName(
-    Context ctx,
-    String resName,
-    String type
-    ) {
+    public static int getResIdByName(Context ctx, String resName, String type) {
         return ctx.getResources().getIdentifier(
-        resName,
-        type,
-        ctx.getPackageName()
+                resName,
+                type,
+                ctx.getPackageName()
         );
     }
 
-    /** Resolve a drawable: package R.drawable first, then mod resources/ (same tree as assets). */
     @SuppressLint("DiscouragedApi")
     private static Drawable resolveDrawable(Context ctx, String name) {
         if (name == null || name.isEmpty()) return null;
@@ -1289,14 +1270,13 @@ public class ButtonController {
         File ext = ctx.getExternalFilesDir(null);
         if (ext == null) return null;
 
-        // Strip leading "resources/" if present; also try basename
         String rel = name.startsWith("resources/") ? name.substring("resources/".length()) : name;
         String[] candidates = {
-        name,
-        "resources/" + rel,
-        rel,
-        name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".webp") || name.endsWith(".xml")
-        ? name : name + ".png"
+                name,
+                "resources/" + rel,
+                rel,
+                name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".webp") || name.endsWith(".xml")
+                        ? name : name + ".png"
         };
 
         for (String c : candidates) {
@@ -1323,10 +1303,7 @@ public class ButtonController {
         if (d != null) view.setBackground(d);
     }
 
-    public static void setBackgroundResource(
-    String id,
-    String resName
-    ) {
+    public static void setBackgroundResource(String id, String resName) {
         MainActivity ctx = mainActivityRef.get();
         if (ctx == null) return;
 
@@ -1403,11 +1380,7 @@ public class ButtonController {
         });
     }
 
-    public static void setDimensions(
-    String id,
-    float nw,
-    float nh
-    ) {
+    public static void setDimensions(String id, float nw, float nh) {
         MainActivity ctx = mainActivityRef.get();
         ViewGroup root = viewRef.get();
 
@@ -1437,10 +1410,10 @@ public class ButtonController {
             float[] pos = getPosition(id);
 
             lp.leftMargin = (int)((root.getWidth() * pos[0]))
-            - (widthPx / 2);
+                    - (widthPx / 2);
 
             lp.topMargin = (int)((root.getHeight() * pos[1]))
-            - (heightPx / 2);
+                    - (heightPx / 2);
 
             btn.setLayoutParams(lp);
 
@@ -1448,7 +1421,6 @@ public class ButtonController {
         });
     }
 
-    // Text
     public static void setText(String id, String text) {
         MainActivity ctx = mainActivityRef.get();
         ViewGroup root = viewRef.get();
@@ -1498,8 +1470,8 @@ public class ButtonController {
             if (data == null) return;
             data.explicitTextSizeSp = false;
             data.button.setTextSize(
-            android.util.TypedValue.COMPLEX_UNIT_PX,
-            data.baseTextSize * scale
+                    android.util.TypedValue.COMPLEX_UNIT_PX,
+                    data.baseTextSize * scale
             );
         });
     }
@@ -1520,13 +1492,7 @@ public class ButtonController {
         });
     }
 
-    public static void setPadding(
-    String id,
-    int left,
-    int top,
-    int right,
-    int bottom
-    ) {
+    public static void setPadding(String id, int left, int top, int right, int bottom) {
         MainActivity ctx = mainActivityRef.get();
         ViewGroup root = viewRef.get();
 
@@ -1541,18 +1507,15 @@ public class ButtonController {
                 return;
 
             data.button.setPadding(
-            left,
-            top,
-            right,
-            bottom
+                    left,
+                    top,
+                    right,
+                    bottom
             );
         });
     }
 
-    public static void setAlignment(
-    String id,
-    int gravity
-    ) {
+    public static void setAlignment(String id, int gravity) {
         MainActivity ctx = mainActivityRef.get();
         ViewGroup root = viewRef.get();
 
@@ -1587,8 +1550,6 @@ public class ButtonController {
         });
     }
 
-    /* Seekbars */
-
     private static void refreshSeekValue(SeekBarData data) {
         if (data == null || !(data.seekBar instanceof ValueSeekBar)) return;
         ValueSeekBar vsb = (ValueSeekBar) data.seekBar;
@@ -1598,6 +1559,7 @@ public class ButtonController {
     }
 
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
+    // Slider
     public static void addSeekBar(String id, float nx, float ny, float w, float h, int min, int max, int progress) {
         MainActivity ctx = mainActivityRef.get();
         if (ctx == null) return;
@@ -1769,7 +1731,7 @@ public class ButtonController {
         });
     }
 
-    // FUCK ASS INPUT
+    // TextInput
     public static void addTextInput(String id, float nx, float ny, float w, float h, String hint) {
         MainActivity ctx = mainActivityRef.get();
         if (ctx == null) return;
@@ -1783,7 +1745,6 @@ public class ButtonController {
                     try {
                         super.draw(canvas);
                     } catch (NullPointerException e) {
-                        // fuck miui crash bro
                     }
                 }
             };
@@ -1793,13 +1754,13 @@ public class ButtonController {
             edit.setMaxLines(Integer.MAX_VALUE);
 
             edit.setInputType(
-            InputType.TYPE_CLASS_TEXT
-            | InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                    InputType.TYPE_CLASS_TEXT
+                            | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                            | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
             );
             edit.setImeOptions(
-            EditorInfo.IME_FLAG_NO_EXTRACT_UI
-            | EditorInfo.IME_FLAG_NO_FULLSCREEN
+                    EditorInfo.IME_FLAG_NO_EXTRACT_UI
+                            | EditorInfo.IME_FLAG_NO_FULLSCREEN
             );
             edit.setOnEditorActionListener((v, actionId, event) -> false);
 
@@ -1819,7 +1780,6 @@ public class ButtonController {
             edit.setFocusableInTouchMode(true);
             edit.setCursorVisible(true);
 
-            // fys
             edit.setVerticalScrollBarEnabled(true);
 
             TextInputData data = new TextInputData(edit);
@@ -1836,7 +1796,7 @@ public class ButtonController {
             int heightPx = (int) (base * h);
 
             FrameLayout.LayoutParams lp =
-            new FrameLayout.LayoutParams(widthPx, heightPx);
+                    new FrameLayout.LayoutParams(widthPx, heightPx);
 
             lp.leftMargin = (int) (rw * nx) - widthPx / 2;
             lp.topMargin = (int) (rh * ny) - heightPx / 2;
@@ -1855,7 +1815,7 @@ public class ButtonController {
     private static void hideKeyboard(View v) {
         Context ctx = v.getContext();
         InputMethodManager imm =
-        (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+                (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
@@ -1896,7 +1856,7 @@ public class ButtonController {
             int heightPx = (int) (overlayHeightPx * data.nh);
 
             FrameLayout.LayoutParams lp =
-            new FrameLayout.LayoutParams(widthPx, heightPx);
+                    new FrameLayout.LayoutParams(widthPx, heightPx);
 
             lp.leftMargin = (int) (overlayWidthPx * data.nx) - widthPx / 2;
             lp.topMargin = (int) (overlayHeightPx * data.ny) - heightPx / 2;
@@ -1906,8 +1866,8 @@ public class ButtonController {
             overlay.frame.addView(data.editText, lp);
 
             Log.d(LOG_TAG,
-            "Moved text input " + inputId +
-            " into overlay " + overlayId);
+                    "Moved text input " + inputId +
+                            " into overlay " + overlayId);
         });
     }
 
@@ -2068,8 +2028,8 @@ public class ButtonController {
 
             try {
                 Typeface tf = Typeface.createFromAsset(
-                ctx.getAssets(),
-                "fonts/" + font);
+                        ctx.getAssets(),
+                        "fonts/" + font);
 
                 data.editText.setTypeface(tf);
             } catch (Exception e) {
@@ -2090,7 +2050,7 @@ public class ButtonController {
 
             boolean visible = !globallyHidden && !hidden;
             data.editText.setVisibility(
-            visible ? View.VISIBLE : View.GONE);
+                    visible ? View.VISIBLE : View.GONE);
         });
     }
 
@@ -2156,7 +2116,7 @@ public class ButtonController {
         if (data == null) return new int[]{0, 0};
 
         return new int[]{
-        data.editText.getSelectionStart(), data.editText.getSelectionEnd()
+                data.editText.getSelectionStart(), data.editText.getSelectionEnd()
         };
     }
 }
