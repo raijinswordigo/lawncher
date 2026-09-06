@@ -1,28 +1,25 @@
 #include "lua.h"
 #include "hook.h"
 #include "lauxlib.h"
+#include "ProgramState.h"
+#include "log.h"
+#include "overlay/main.h"
 
-static int Test(lua_State *L) {
-	lua_pushstring(L, "hello world");
-	return 1;
-}
-
-static const luaL_Reg globals[] = {
-	{"Test", Test},
-	{NULL, NULL}
-};
+#define LOG_TAG "ProgramState"
 
 HOOK_SYMBOL(
 	RegisterProgramLibrary,
 	"_ZN5Caver12ProgramState22RegisterProgramLibraryEv",
-	void, (void *this)
-	) {
+	void, (ProgramState *this)
+) {
 	orig_RegisterProgramLibrary(this);
-	lua_State *L = *$(lua_State*, this, 0x0, 0x0);
-	/* Avoid any stack pollution */
-	const luaL_Reg *g = globals;
-	for (; g->name; g++) {
-		lua_pushcfunction(L, g->func);
-		lua_setglobal(L, g->name);
-	}
+	lua_State *L = this->L;
+
+	API_register_java_stuff(L);
+
+	LOGD("Lua libraries registered.");
+}
+
+void init_API() {
+	initAPI_java();
 }
