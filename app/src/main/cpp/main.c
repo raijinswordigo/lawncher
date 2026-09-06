@@ -14,6 +14,8 @@ extern void assets_on_mod_exit(void);
 extern void saves_on_mod_exit(void);
 extern void init_saves(void);
 
+extern void init_API();
+
 //extern void init_jpatch(void);
 
 JNIEXPORT void JNICALL
@@ -24,6 +26,7 @@ Java_net_kiwi_lawncher_MainActivity_loadHooks(JNIEnv *env, jclass clazz) {
 	init_lua();
 	init_lual();
 	init_saves();
+	init_API();
 }
 
 JNIEXPORT void JNICALL
