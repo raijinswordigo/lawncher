@@ -61,6 +61,12 @@ G_DL_SYMBOL(
 )
 
 G_DL_SYMBOL(
+	SceneObject_ComponentWithInterface,
+	"_ZNK5Caver11SceneObject22ComponentWithInterfaceEl",
+	void*, (SceneObject *obj, long *interface)
+)
+
+G_DL_SYMBOL(
 	SceneObject_Update,
 	"_ZN5Caver11SceneObject6UpdateEfbb",
 	void, (SceneObject *obj, float dt, bool a, bool b)

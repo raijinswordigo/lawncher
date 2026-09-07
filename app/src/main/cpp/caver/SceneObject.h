@@ -35,6 +35,7 @@ DL_SYMBOL_DECL(SceneObject_SetAlwaysActive, void, (SceneObject *obj, bool active
 DL_SYMBOL_DECL(SceneObject_SetInstanceScaling, void, (SceneObject *obj, float scale));
 DL_SYMBOL_DECL(SceneObject_AddComponent, void, (SceneObject *obj, void *comp));
 DL_SYMBOL_DECL(SceneObject_RemoveAllComponents, void, (SceneObject *obj));
+DL_SYMBOL_DECL(SceneObject_ComponentWithInterface, void*, (SceneObject *obj, long *interface));
 DL_SYMBOL_DECL(SceneObject_Update, void, (SceneObject *obj, float dt, bool a, bool b));
 
 #endif
