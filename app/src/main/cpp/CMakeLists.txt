@@ -5,10 +5,6 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("lawncher")
 
-file(GLOB_RECURSE KIWI_SOURCES
-        "${CMAKE_CURRENT_SOURCE_DIR}/api/kiwi/*.c"
-)
-
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         # Core
@@ -22,6 +18,19 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         core/jpatch.c
         core/map.c
         core/toml.c
+
+        # Hooks
+        hooks/Camera.c
+        hooks/CameraController.c
+        hooks/GameSceneController.c
+        hooks/GameViewController.c
+        hooks/PlayerProfile.c
+        hooks/SceneObject.c
+        hooks/Scene.c
+        hooks/CaverShell.c
+        hooks/ModelLibrary.c
+        hooks/TextureLibrary.c
+        hooks/RenderingContext.c
 
         lawncher/jni/filerift_jni.cpp
         lawncher/platform/pod_gl_renderer.cpp
