@@ -15,7 +15,7 @@ typedef struct GameViewController {
 	GameSceneController *GameSceneController;
 	char _pad3[archSplit(0x04, 0x08)];
 	void *GameSceneView;
-	char _pad4[archSplit(0x40, 0x50)];
+	char _pad4[archSplit(0x40, 0x80)];
 } GameViewController;
 
 GameViewController *gvc_from_L(lua_State *L);
