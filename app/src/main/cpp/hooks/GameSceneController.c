@@ -41,6 +41,12 @@ G_DL_SYMBOL(
 );
 
 G_DL_SYMBOL(
+	GameSceneController_CreateHeroObjectAt,
+	"_ZN5Caver19GameSceneController18CreateHeroObjectAtERKNS_7Vector3Eib",
+	void, (GameSceneController *gsc, Vector3 *pos, int facing_direction, bool unk)
+);
+
+G_DL_SYMBOL(
 	GameSceneController_UpdateTarget,
 	"_ZN5Caver19GameSceneController12UpdateTargetEv",
 	void, (GameSceneController *gsc)
