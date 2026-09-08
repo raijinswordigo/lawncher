@@ -5,7 +5,6 @@
 #include "stdstring.h"
 
 typedef struct ModelLibrary {
-	char _pad[1];
 } ModelLibrary;
 
 DL_SYMBOL_DECL(ModelLibrary_sharedLibrary, ModelLibrary*, (void));
