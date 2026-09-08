@@ -4,21 +4,11 @@
 #include "hook.h"
 #include "ProgramState.h"
 #include "stdstring.h"
+#include "types.h"
+#include "Camera.h"
 
-typedef struct Scene {
-	void *vtable;
-	char _pad0[archSplit(0x0c, 0x18)];
-	int pauseCount;
-	char _pad1[archSplit(0x04, 0x04)];
-	ProgramState ProgramState;
-	char _pad2[archSplit(0x18, 0x20)];
-	void *ObjectLibrary;
-	char _pad3[archSplit(0x88, 0x108)];
-	void *Camera;
-	char _pad4[archSplit(0x100, 0x1a0)];
-	bool debugHitboxes;
-	char _pad5[archSplit(0x8f, 0xaf)];
-} Scene;
+typedef struct Scene Scene; // TODO: needs to be remapped!!
+// hitboxes should be at 0x1c4,
 
 Scene *scene_from_L(lua_State *L);
 Scene *scene_get();

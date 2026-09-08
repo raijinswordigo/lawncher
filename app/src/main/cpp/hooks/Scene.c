@@ -19,7 +19,13 @@ HOOK_SYMBOL(
 	void, (Scene *scene, float dt)
 ) {
 	g_scene = scene;
-	scene->debugHitboxes = true;
+//	FloatColor tint = {
+//		0, 0, 0, 0
+//	};
+//	scene->tintColor = tint;
+//	scene->debugHitboxes = true;
+//	scene->tintEnabled = true;
+//	scene->tintColor = (FloatColor){0.7f, 0.0f, 0.8f, 1.0f};
 	return orig_Update(scene, dt);
 }
 
