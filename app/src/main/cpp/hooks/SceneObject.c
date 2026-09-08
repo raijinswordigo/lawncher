@@ -63,7 +63,7 @@ G_DL_SYMBOL(
 G_DL_SYMBOL(
 	SceneObject_ComponentWithInterface,
 	"_ZNK5Caver11SceneObject22ComponentWithInterfaceEl",
-	void*, (SceneObject *obj, long *interface)
+	void*, (SceneObject *obj, void* interface)
 )
 
 G_DL_SYMBOL(

@@ -26,4 +26,6 @@ typedef struct Component {
 // this = operator_new(0x28); Component::Component(this);
 // this_00 = operator_new(0x48); Component::Component(this_00);
 
+Component* component_fetch(SceneObject *obj, const char *component_name);
+
 #endif //LAWNCHER_COMPONENT_H
