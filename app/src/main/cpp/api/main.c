@@ -7,6 +7,8 @@
 
 #define LOG_TAG "ProgramState"
 
+extern void API_register_mini(lua_State *L);
+
 HOOK_SYMBOL(
 	RegisterProgramLibrary,
 	"_ZN5Caver12ProgramState22RegisterProgramLibraryEv",
@@ -16,6 +18,7 @@ HOOK_SYMBOL(
 	lua_State *L = this->L;
 
 	API_register_java_stuff(L);
+	API_register_mini(L);
 
 	LOGD("Lua libraries registered.");
 }

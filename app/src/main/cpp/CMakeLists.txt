@@ -48,6 +48,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         lua/lauxlib.c
 
         # API
+        api/mini.c
         api/overlay/button.c
         api/overlay/drawer.c
         api/overlay/hooks.c
