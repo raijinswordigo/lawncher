@@ -21,6 +21,5 @@ HOOK_SYMBOL(
 	"_ZN5Caver23CharControllerComponent6UpdateEf",
 	void, (CharControllerComponent *cc, float dt)
 ) {
-	cc->runSpeed = 2000.0f;
 	return orig_Update(cc, dt);
 }

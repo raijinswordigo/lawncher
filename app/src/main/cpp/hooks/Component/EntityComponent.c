@@ -10,6 +10,5 @@ HOOK_SYMBOL(
 	"_ZN5Caver15EntityComponent6UpdateEf",
 	void, (EntityComponent *comp, float dt)
 ) {
-	comp->physics.maxSpeedFactor = 2000.0f;
 	return orig_Update(comp, dt);
 }
