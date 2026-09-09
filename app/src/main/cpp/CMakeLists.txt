@@ -20,6 +20,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         core/toml.c
 
         # Hooks
+        hooks/Component/CharControllerComponent.c
+        hooks/Component/EntityComponent.c
+        hooks/PhysicsObjectState.c
         hooks/Camera.c
         hooks/CameraController.c
         hooks/GameSceneController.c
@@ -48,7 +51,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         lua/lauxlib.c
 
         # API
-        api/mini.c
+        api/mini/mini.c
+        api/mini/mini_character.c
+
         api/overlay/button.c
         api/overlay/drawer.c
         api/overlay/hooks.c
