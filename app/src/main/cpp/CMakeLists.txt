@@ -54,6 +54,11 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         api/mini/mini.c
         api/mini/mini_character.c
 
+        api/files/io.c
+        api/files/PathParser.c
+        api/files/fs.c
+        api/files/os.c
+
         api/overlay/button.c
         api/overlay/drawer.c
         api/overlay/hooks.c
@@ -74,6 +79,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/core
         ${CMAKE_CURRENT_SOURCE_DIR}/libs
         ${CMAKE_CURRENT_SOURCE_DIR}/caver
+        ${CMAKE_CURRENT_SOURCE_DIR}/api
+        ${CMAKE_CURRENT_SOURCE_DIR}/api/files
         ${CMAKE_CURRENT_SOURCE_DIR}/lawncher
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../GlossHook/GlossHook/include
 )

@@ -8,6 +8,9 @@
 #define LOG_TAG "ProgramState"
 
 extern void API_register_mini(lua_State *L);
+extern void API_register_io(lua_State *L);
+extern void API_register_fs(lua_State *L);
+extern void API_register_os(lua_State *L);
 
 HOOK_SYMBOL(
 	RegisterProgramLibrary,
@@ -19,6 +22,9 @@ HOOK_SYMBOL(
 
 	API_register_java_stuff(L);
 	API_register_mini(L);
+	API_register_io(L);
+	API_register_fs(L);
+	API_register_os(L);
 
 	LOGD("Lua libraries registered.");
 }
