@@ -71,12 +71,18 @@ static int RecreateHero(lua_State *L) {
 	return 0;
 }
 
+// stub
+static int SetCoinLimit(lua_State *L) {
+	return 0;
+}
+
 static const luaL_Reg lib[] = {
 	{"Arch", Arch},
 	{"ToggleDebug", ToggleDebug},
 	{"SetControlsHidden", SetControlsHidden},
 	{"GetProfileID", GetProfileID},
 	{"RecreateHero", RecreateHero},
+	{"SetCoinLimit", SetCoinLimit},
 	{NULL, NULL}
 };
 
