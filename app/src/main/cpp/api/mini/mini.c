@@ -80,11 +80,14 @@ static const luaL_Reg lib[] = {
 	{NULL, NULL}
 };
 
+extern void miniLL_register_character(lua_State *L);
+
 void API_register_mini(lua_State *L) {
 	lua_newtable(L);
 	for (int i = 0; lib[i].name; i++) {
 		lua_pushcfunction(L, lib[i].func);
 		lua_setfield(L, -2, lib[i].name);
 	}
+	miniLL_register_character(L);
 	lua_setglobal(L, "Mini");
 }

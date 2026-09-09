@@ -22,7 +22,7 @@ typedef struct Component {
 	int flags1; // 20, 36
 	SceneObject *object; // 24 (0x18), 40 (0x28)
 	String label; // 28 (0x1c), 48 (0x30)
-} Component; // sizeof should be 0x28, 0x48
+} Component; // sizeof(0x28, 0x48)
 // this = operator_new(0x28); Component::Component(this);
 // this_00 = operator_new(0x48); Component::Component(this_00);
 
