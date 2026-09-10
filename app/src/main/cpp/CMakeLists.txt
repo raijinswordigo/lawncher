@@ -34,7 +34,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         hooks/ModelLibrary.c
         hooks/TextureLibrary.c
         hooks/RenderingContext.c
+        hooks/Program.c
         hooks/Component.c
+        hooks/BindingValue.c
 
         lawncher/jni/filerift_jni.cpp
         lawncher/platform/pod_gl_renderer.cpp
